@@ -191,17 +191,15 @@ def register_tools(mcp: FastMCP) -> None:
         """List all vias on the open board."""
         try:
             board = get_kicad().get_board()
-            tracks = board.get_tracks()
+            vias = board.get_vias()
             result = []
-            for t in tracks:
-                if not _is_via(t):
-                    continue
+            for v in vias:
                 try:
                     entry = {
-                        "position_mm": _pos_to_dict(t.position),
-                        "size_mm": _nm_to_mm(t.size),
-                        "drill_mm": _nm_to_mm(t.drill),
-                        "net": str(t.net.name) if t.net else "",
+                        "position_mm": _pos_to_dict(v.position),
+                        "diameter_mm": _nm_to_mm(v.diameter),
+                        "drill_diameter_mm": _nm_to_mm(v.drill_diameter),
+                        "net": str(v.net.name),
                     }
                 except Exception as field_exc:
                     entry = {"error": str(field_exc)}
@@ -217,16 +215,17 @@ def register_tools(mcp: FastMCP) -> None:
             board = get_kicad().get_board()
             zones = board.get_zones()
             result = []
+            from kipy.board import BoardLayer
             for z in zones:
                 try:
-                    net_name = str(z.net.name) if z.net else ""
+                    net_name = str(z.net.name)
                 except Exception:
                     net_name = ""
                 try:
-                    layer = str(z.layer)
+                    layers = [BoardLayer.Name(l) for l in z.layers]
                 except Exception:
-                    layer = "unknown"
-                result.append({"net": net_name, "layer": layer})
+                    layers = []
+                result.append({"net": net_name, "layers": layers})
             return result
         except Exception as exc:
             return [{"error": str(exc)}]
@@ -477,7 +476,7 @@ def register_tools(mcp: FastMCP) -> None:
                 return f"Footprint '{reference}' not found."
 
             commit = board.begin_commit()
-            target.orientation = Angle(angle)
+            target.orientation = Angle.from_degrees(angle)
             board.update_items([target])
             board.push_commit(commit)
             return f"Rotated {reference} to {angle}°."

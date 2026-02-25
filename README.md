@@ -68,6 +68,17 @@ All positions are in millimetres. Write operations are wrapped in a commit so th
 | `refill_zones` | Refill all copper zones |
 | `save_board` | Save the board to disk |
 
+### Token usage warnings
+
+Some tools can return large responses on complex boards and consume significant context:
+
+| Tool | Why it can be large |
+|---|---|
+| `get_component_connections` | Returns every net for every component plus all shared-net neighbours — output grows with O(components × nets). On a dense board, **avoid calling without a `reference` filter**. |
+| `get_footprints` | Returns all footprints. Use the `reference_filter` argument to narrow results (e.g. `"U"`, `"C"`) instead of fetching everything. |
+| `get_tracks` | One entry per track segment — a fully routed board can have thousands. |
+| `get_nets` | One entry per net — large designs can have hundreds. Prefer `get_board_info` for a quick count. |
+
 ## Example usage
 
 Once added to Claude Code, describe what you want in natural language:
