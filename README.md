@@ -1,8 +1,9 @@
 # kicad-mcp
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Status: Experimental](https://img.shields.io/badge/Status-Experimental-orange.svg)]()
 
-An MCP server for controlling KiCad 9 over its IPC API from Claude Code.
+An MCP server for controlling KiCad 9 over its IPC API from Claude Code. Experimental — use at your own risk.
 
 ## Requirements
 
