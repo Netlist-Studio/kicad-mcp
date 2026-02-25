@@ -1,0 +1,15 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kicad-mcp"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = ["mcp[cli]>=1.0.0", "kicad-python>=0.5.0"]
+
+[project.scripts]
+kicad-mcp = "kicad_mcp.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kicad_mcp"]
